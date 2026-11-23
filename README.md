@@ -1,114 +1,102 @@
+<img src="frontend/public/assets/mindscope-orbit.png" width="72" alt="MindScope orbit emblem">
+
 # MindScope
 
-**An explainable machine learning application for exploring the OpenML Student Depression Dataset.**
+MindScope is an interactive machine learning project for exploring the OpenML Student Depression Dataset. Load a hypothetical student profile, change an input such as academic pressure or sleep duration, and see how a five-model XGBoost ensemble changes its estimate. Each prediction comes with a breakdown of the inputs that moved it toward or away from the survey’s recorded **Yes** label.
 
-MindScope takes a trained model from Kaggle to a browser-based research tool. Explore the dataset, run a hypothetical student profile through a five-member XGBoost ensemble, and inspect which inputs move the model’s estimated probability of the recorded **Yes** label.
+**[Open the live application](https://mind-scope-tau.vercel.app/#overview)** · [Training notebook](student-depression.ipynb) · [Project report](docs/project_report.md)
 
-![Python 3.13](https://img.shields.io/badge/Python-3.13-0B3D2E?style=flat-square&logo=python&logoColor=white)
-![FastAPI](https://img.shields.io/badge/FastAPI-API-0B3D2E?style=flat-square&logo=fastapi&logoColor=white)
-![React](https://img.shields.io/badge/React-TypeScript-0B3D2E?style=flat-square&logo=react&logoColor=white)
-![XGBoost](https://img.shields.io/badge/XGBoost-5%20models-0B3D2E?style=flat-square)
-![SHAP](https://img.shields.io/badge/SHAP-Explainability-0B3D2E?style=flat-square)
+## Try a prediction
 
-[Results](#held-out-results) · [Explainability](#explainability) · [Run locally](#run-locally) · [Deployment](#deployment)
+1. Open [Assessment](https://mind-scope-tau.vercel.app/#assessment), select **Load sample profile**, then **Run model**.
+2. Read the estimated label and the Yes and No probabilities. The waterfall shows how each feature moves the estimate from the model’s baseline, in percentage points.
+3. Change one input and run the model again. Compare the two estimates, then open **Explainability** to see which features influence predictions across a sample of profiles.
 
-> **Research use only.** The model estimates a label recorded in a survey dataset. Its outputs are unsuitable for diagnosis, clinical screening, treatment, or decisions about individual students. Try the app with hypothetical profiles.
+Use hypothetical profiles. MindScope was built for research and education. Its predictions describe patterns in survey labels. Clinical screening, diagnosis, and decisions about individual students fall outside its scope.
 
-## What you can explore
+## How the model works
 
-| App section | What you’ll find |
+| Stage | Implementation |
 | --- | --- |
-| **Assessment** | Load a sample profile or enter 15 features. See the Yes and No probabilities, the decision at a threshold of 0.56, and an individual SHAP waterfall. |
-| **Explainability** | Compare global feature contributions and inspect how selected features affect model estimates across the sampled records. |
-| **Dataset** | Explore class balance, distributions, missing values, numeric summaries, and Pearson correlations. |
-| **Performance** | Inspect held-out metrics, the confusion matrix, the calibration curve, and the saved prediction parity check. |
-| **Overview and Methodology** | Review the project scope, preprocessing, model evaluation, and responsible-use limits. |
+| Dataset | The source contains 27,901 records. The modeling cohort contains 27,870 records and uses 15 demographic, academic, and lifestyle inputs. The self-harm-related survey item is excluded from model inputs and public analytics. |
+| Preprocessing | Each ensemble member applies its fitted pipeline. Numeric values use median imputation. Categorical values use most-frequent imputation and one-hot encoding. |
+| Prediction | Five XGBoost models trained with seeds 42–46 each estimate the probability of the recorded Yes label. MindScope averages their estimates and assigns Yes at a threshold of 0.56. |
+| Explanation | TreeSHAP computes contributions in probability space for each model using a fixed background of 64 profiles. MindScope averages the contributions and groups encoded categories under their original feature names. |
 
-## Held-out results
+[Original dataset on OpenML](https://www.openml.org/d/46874) · [Technical reference](docs/technical_reference.md)
 
-The [OpenML dataset](https://www.openml.org/search?type=data&sort=runs&id=46874) contains **27,901 records**. Filtering to students yields **27,870 records**. The notebook used a stratified 60/20/20 split with seed 42 and selected the **0.56** threshold on validation macro-F1. The final model was refit on the **22,296** training and validation records, then scored on the original **5,574-record holdout**.
+## Held-out performance
 
-| Metric | Exported ensemble |
-| --- | ---: |
-| Accuracy | **79.15%** |
-| Macro-F1 | **0.7857** |
-| ROC-AUC | **0.8714** |
-| Average precision | **0.8974** |
-| Precision for Yes | 0.8251 |
-| Recall for Yes | 0.8170 |
-| Brier score | 0.1416 |
+The notebook used a stratified 60/20/20 split with seed 42. Validation macro-F1 determined the decision threshold. The exported ensemble was then refit on all 22,296 training and validation records and evaluated on the original **5,574 held-out records**.
 
-These are results for the model served by MindScope. The Performance page also shows the notebook’s earlier results for the train-only ensemble. Ten saved Kaggle predictions matched the serving implementation within **4.89 × 10⁻⁷** absolute probability error. [Evaluation artifact](artifacts/model_metrics.json) · [Academic report](docs/project_report.md)
+| Accuracy | Macro-F1 | ROC-AUC | Average precision | Yes precision | Yes recall | Brier score |
+| ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| 79.15% | 0.7857 | 0.8714 | 0.8974 | 0.8251 | 0.8170 | 0.1416 |
 
-## Explainability
+| Recorded label | Predicted No | Predicted Yes |
+| --- | ---: | ---: |
+| No | 1,747 | 565 |
+| Yes | 597 | 2,665 |
 
-MindScope computes TreeSHAP for each of the five boosters in probability space. It averages their contributions and groups related one-hot inputs under the original feature name. The baseline plus the signed contributions reconstructs the ensemble’s estimated Yes probability. The maximum reconstruction error across **200 sampled records** was **1.43 × 10⁻⁷**.
+The Performance page includes the calibration curve and separate results for the earlier train-only ensemble. Across ten saved notebook predictions, the serving implementation reproduced the Yes probabilities within a maximum absolute difference of 4.89 × 10⁻⁷. [Evaluation artifact](artifacts/model_metrics.json)
 
-![SHAP summary showing how feature values affect the ensemble’s estimated Yes probability across 200 sampled records](reports/figures/global_shap_summary.png)
+## Reading the explanations
 
-The chart describes how the fitted ensemble uses its inputs. Feature contributions do not establish causation or clinical significance. [Technical reference](docs/technical_reference.md)
+Each dot below represents one sampled profile for the feature on that row. Its horizontal position shows the signed contribution to the predicted Yes probability. A wider horizontal spread means the feature contributed differently across profiles. These contributions describe the fitted model’s behavior and cannot establish what causes depression.
 
-## Architecture
-
-```mermaid
-flowchart TD
-    UI["React and TypeScript interface"] --> API["FastAPI"]
-    API --> Model["Five XGBoost boosters"]
-    API --> Explorer["Dataset summaries"]
-    API --> Explanation["SHAP explanations"]
-    Model --> Explanation
-```
-
-The API loads the fitted preprocessing pipelines and portable booster files once at startup. It runs on CPU and serves the precomputed global SHAP results alongside on-demand individual explanations. The application has no database and does not retain submitted profiles.
+![Global SHAP summary for 200 sampled student profiles](reports/figures/global_shap_summary.png)
 
 ## Run locally
 
-Requires **Python 3.13** and **Node.js 22 or newer**. Clone the repository, then run the backend commands in **Git Bash** on Windows.
+Use Python 3.13 and Node.js 22 or newer. From a terminal, clone the repository and create a Python environment.
 
-```bash
+```sh
 git clone https://github.com/AhsanCS64/MindScope.git
 cd MindScope
 python -m venv .venv
-source .venv/Scripts/activate
-python -m pip install -r backend/requirements-dev.txt
-python backend/prepare_dataset.py
-OMP_NUM_THREADS=1 OPENBLAS_NUM_THREADS=1 python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 --no-access-log
 ```
 
-On macOS or Linux, activate with `source .venv/bin/activate`. If the verified CSV already exists in `data/raw/`, skip dataset preparation. To prepare it from the original local ARFF file, run `python backend/prepare_dataset.py --arff dataset_`.
+Activate it with `.\.venv\Scripts\Activate.ps1` in PowerShell, `source .venv/Scripts/activate` in Windows Git Bash, or `source .venv/bin/activate` on Linux and macOS. From the repository root, install the backend dependencies, prepare the dataset, and start FastAPI.
 
-Keep the backend running. In a second terminal, starting from the repository root, run the frontend.
+```sh
+python -m pip install -r backend/requirements-dev.txt
+python backend/prepare_dataset.py
+python -m uvicorn app.main:app --app-dir backend --host 127.0.0.1 --port 8000 --no-access-log
+```
 
-```bash
+Dataset preparation needs internet access for the initial download. If you have the source ARFF locally, use `python backend/prepare_dataset.py --arff path/to/source.arff` instead. The fitted model and preprocessing artifacts are included in the repository.
+
+In a second terminal, start from the repository root.
+
+```sh
 cd frontend
 npm ci
 npm run dev
 ```
 
-Open [MindScope](http://localhost:5173) and choose **Assessment → Load sample profile → Run model**. See [API health](http://127.0.0.1:8000/api/health) and [Swagger UI](http://127.0.0.1:8000/docs) for backend checks.
+Open [the local app](http://localhost:5173). Vite forwards requests under `/api` to port 8000. Check [API health](http://127.0.0.1:8000/api/health) or explore the [interactive API reference](http://127.0.0.1:8000/docs).
 
-## Reproduce the evaluation
+## Verify the project
 
-From the repository root with the virtual environment active:
+From the activated Python environment, run these commands in `backend/`.
 
-```bash
-cd backend
+```sh
 python validate_model.py
 python -m pytest -q
-python benchmark.py
 ```
 
-The validation script checks the portable export, reconstructs the notebook split, and reproduces the holdout metrics with the fitted model. Run `python generate_global_shap.py` from `backend/` to regenerate the figure and global contribution data. To verify the frontend production build, run `npm run build` from `frontend/`.
+The validation script checks prediction parity and scores the fitted ensemble on the reconstructed holdout. To regenerate the global SHAP analysis, run `python generate_global_shap.py`. For inference timings, run `python benchmark.py`. In `frontend/`, run `npm run build` to type-check and build the interface.
 
 ## Deployment
 
-The repository includes a [Render Blueprint](render.yaml) for the backend and a [Vercel configuration](frontend/vercel.json) for the frontend. Deploy Render first, use its HTTPS origin as Vercel’s `VITE_API_URL`, then set Render’s `CORS_ORIGINS` to the deployed frontend origin. [Step-by-step deployment guide](docs/deployment.md)
+The React and TypeScript frontend runs on Vercel. FastAPI runs on Render, loads the fitted artifacts on CPU, and serves predictions, dataset summaries, and explanations. The application does not store submitted profiles.
 
-## Author
+- **Backend** — Deploy the included blueprint. Its build step installs Python dependencies and prepares the dataset. Render checks readiness at `/api/health`. [Render configuration](render.yaml)
+- **Frontend** — Set the Vercel project root to `frontend/`. Its build runs in Vercel mode, and its rewrite forwards same-origin `/api/*` requests to Render. For a separate deployment, update the rewrite destination and the backend’s `CORS_ORIGINS` value to your own service origins. [Vercel configuration](frontend/vercel.json)
 
-**H. M. Ahsan Habib Kushal (Archmage)** · Computer Science and Engineering, NITER, University of Dhaka
+## Developer
 
-MindScope brings together two areas of my work: applied machine learning and full-stack software engineering. I built it to make the path from a trained model to an inspectable application visible, including the evidence behind its predictions and the limits of what they can tell us.
+**H M Ahsan Habib Kushal** · Machine Learning Engineer  
+Computer Science and Engineering, NITER, University of Dhaka
 
-[GitHub](https://github.com/AhsanCS64) · [Portfolio](https://ahsanhabibkushal.vercel.app/) · [Hugging Face](https://huggingface.co/Archmage64)
-
+[Portfolio](https://ahsanhabibkushal.vercel.app/) · [GitHub](https://github.com/AhsanCS64) · [Hugging Face](https://huggingface.co/Archmage64)
