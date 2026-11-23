@@ -14,7 +14,7 @@ const current = () => pages.find(page => link(page) === location.hash) ?? 'Overv
 const education = 'This educational demonstration estimates the dataset’s recorded label. It is not a diagnosis, a clinical screen, or a treatment recommendation.'
 
 function Logo() {
-  return <span className="logo-mark" aria-hidden="true"><span/><span/><span/></span>
+  return <img className="brand-logo" src="/assets/MindScope.png" alt="MindScope" width="2172" height="724"/>
 }
 
 function Heading({ label, title, children }: { label: string; title: string; children: ReactNode }) {
@@ -48,9 +48,24 @@ function Bars({ items, format = number.format }: { items: { name: string; value:
 
 function Overview() {
   return <>
-    <section className="hero"><div><span className="eyebrow">Student mental health research</span><h1>See how the model<br/> reaches a prediction.</h1><p>Explore the OpenML Student Depression Dataset, run the five-member XGBoost ensemble on a sample profile, and inspect how each feature shifts the estimate.</p>
-      <div className="actions"><a className="button primary" href={link('Assessment')}>Try a research example <span aria-hidden>↗</span></a><a className="button ghost" href={link('Dataset')}>Explore the dataset</a></div>
-    </div><div className="hero-art" aria-hidden="true"><div className="orbit o1"/><div className="orbit o2"/><div className="orbit o3"/><div className="orbit o4"/><div className="orbit o5"/><div className="axis a1"/><div className="axis a2"/><i/><i/><i/><i/></div></section>
+    <section className="hero">
+      <div className="hero-copy"><span className="eyebrow">Student mental health research</span>
+        <h1>Inside a student<br/><em>survey prediction.</em></h1>
+        <p>Start with a sample student profile. Follow five XGBoost models from survey responses to a label estimate, then explore the features behind it.</p>
+        <div className="actions"><a className="button primary" href={link('Assessment')}>Try a sample profile <span aria-hidden="true">→</span></a><a className="button ghost" href={link('Dataset')}>Explore the dataset</a></div>
+      </div>
+      <figure className="ensemble-figure">
+        <figcaption>Inside the ensemble</figcaption>
+        <svg viewBox="0 0 320 162" role="img" aria-label="Five model outputs converge into one average estimate">
+          {[20,50,81,112,142].map((y,i) => <g key={y}>
+            <path d={'M 50 '+y+' C 146 '+y+' 142 81 223 81'} fill="none" stroke={i===2?'#edc277':'#80d8ac'} strokeWidth="1.8"/>
+            <circle cx="50" cy={y} r="4" fill={i===2?'#edc277':'#a5f2ce'}/>
+            <text x="7" y={y+4}>M{i+1}</text></g>)}
+          <circle cx="247" cy="81" r="29" fill="#124f42" stroke="#a5f2ce"/><text x="247" y="86" textAnchor="middle">avg</text>
+        </svg>
+        <div className="figure-key"><span>Model outputs</span><span>Mean estimate</span></div>
+      </figure>
+    </section>
     <Remote<Summary> path="/api/dataset/summary">{data => <div className="stat-grid">
       <div><small>Source records</small><strong>{number.format(data.source_rows)}</strong><span>OpenML dataset 46874</span></div>
       <div><small>Model inputs</small><strong>{data.model_feature_count}</strong><span>Academic, lifestyle and demographic features</span></div>
@@ -285,7 +300,7 @@ function App() {
     return () => window.removeEventListener('hashchange', update)
   }, [])
   return <><a className="skip" href="#main-content" onClick={event => { event.preventDefault(); main.current?.focus() }}>Skip to content</a>
-    <header className="site-header"><div className="nav-inner"><a href={link('Overview')} className="brand"><Logo/>MindScope</a>
+    <header className="site-header"><div className="nav-inner"><a href={link('Overview')} className="brand"><Logo/></a>
       <nav aria-label="Main">{pages.map(item => <a key={item} href={link(item)} aria-current={page === item ? 'page' : undefined}>{item}</a>)}</nav>
     </div></header>
     <main id="main-content" ref={main} tabIndex={-1}>
@@ -296,7 +311,13 @@ function App() {
       {page === 'Performance' && <Performance/>}
       {page === 'Methodology' && <Methodology/>}
     </main>
-    <footer><div><a href={link('Overview')} className="brand"><Logo/>MindScope</a><span>Educational research demonstration</span></div></footer>
+    <footer><div className="footer-inner">
+      <div className="footer-project"><a href={link('Overview')} className="brand">MindScope</a><p>Educational research demonstration</p></div>
+      <section className="developer" aria-label="Developer profile"><span className="eyebrow">Developed by</span>
+        <h2>H M AHSAN HABIB KUSHAL</h2><p>Machine Learning Engineer</p><p className="affiliation">Computer Science &amp; Engineering · NITER, University of Dhaka</p>
+        <div className="profile-links"><a href="https://ahsanhabibkushal.vercel.app/">Portfolio ↗</a><a href="https://github.com/AhsanCS64">GitHub ↗</a></div>
+      </section>
+    </div></footer>
   </>
 }
 
