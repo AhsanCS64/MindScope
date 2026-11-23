@@ -18,9 +18,9 @@ Render's free web service tier is listed at 512 MB and spins down after 15 minut
 ## Vercel
 
 1. Import the same GitHub repository and set the root directory to `frontend`.
-2. Select Vite and keep `npm run build` and `dist` as the build command and output directory.
-3. Set `VITE_API_URL` to the Render service origin, over HTTPS, with no trailing path. Redeploy when it changes because Vite embeds the value at build time.
-4. Confirm that Render's `CORS_ORIGINS` matches the deployed frontend domain. If you change a manually configured value, choose **Save and deploy** and wait for the backend to go live. [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite)
+2. Select Vite, set the build command to `npm run build -- --mode vercel`, and use `dist` as the output directory. The committed `frontend/vercel.json` sets both values.
+3. Deploy. The Vercel build uses same-origin `/api` requests. Vercel forwards them to the Render origin in `frontend/vercel.json`. Update the rewrite destination if the Render service URL changes.
+4. Open `/api/health` on your Vercel domain. A successful response confirms the frontend host can reach Render through the rewrite. [Vercel rewrites](https://vercel.com/docs/routing/rewrites)
 
 ## Public smoke checks
 

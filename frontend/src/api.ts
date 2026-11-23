@@ -41,7 +41,10 @@ export type Explanation = {
   contributions: { feature: string; contribution: number }[]
 }
 
-const base = (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
+// The Vercel deployment forwards same-origin API requests to Render.
+const base = import.meta.env.MODE === 'vercel'
+  ? ''
+  : (import.meta.env.VITE_API_URL ?? '').replace(/\/$/, '')
 export const apiUrl = (path: string) => base + path
 
 export async function request<T>(path: string, body?: Record<string, string | number>, signal?: AbortSignal): Promise<T> {
