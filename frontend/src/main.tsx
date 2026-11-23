@@ -292,16 +292,47 @@ function Methodology() {
 
 function App() {
   const [page, setPage] = useState(current)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuButton = useRef<HTMLButtonElement>(null)
+  const header = useRef<HTMLElement>(null)
+  useEffect(() => {
+    if (!menuOpen) return
+    const closeOutside = (event: PointerEvent) => {
+      if (!header.current?.contains(event.target as Node)) setMenuOpen(false)
+    }
+    const desktop = window.matchMedia('(min-width: 861px)')
+    const closeOnResize = () => setMenuOpen(false)
+    desktop.addEventListener('change', closeOnResize)
+    document.addEventListener('pointerdown', closeOutside)
+    return () => {
+      desktop.removeEventListener('change', closeOnResize)
+      document.removeEventListener('pointerdown', closeOutside)
+    }
+  }, [menuOpen])
   const [example, setExample] = useState<Example>()
   const main = useRef<HTMLElement>(null)
   useEffect(() => {
-    const update = () => { setPage(current()); window.scrollTo(0, 0); main.current?.focus() }
+    const update = () => { setPage(current()); setMenuOpen(false); window.scrollTo(0, 0); main.current?.focus({ preventScroll: true }) }
     window.addEventListener('hashchange', update)
     return () => window.removeEventListener('hashchange', update)
   }, [])
   return <><a className="skip" href="#main-content" onClick={event => { event.preventDefault(); main.current?.focus() }}>Skip to content</a>
-    <header className="site-header"><div className="nav-inner"><a href={link('Overview')} className="brand"><Logo/></a>
-      <nav aria-label="Main">{pages.map(item => <a key={item} href={link(item)} aria-current={page === item ? 'page' : undefined}>{item}</a>)}</nav>
+    <header className="site-header" ref={header}
+      onBlur={event => { if (!event.currentTarget.contains(event.relatedTarget)) setMenuOpen(false) }}
+      onKeyDown={event => {
+        if (menuOpen && event.key === 'Escape') {
+          setMenuOpen(false)
+          menuButton.current?.focus()
+        }
+      }}>
+      <div className="nav-inner"><a href={link('Overview')} className="brand" onClick={() => setMenuOpen(false)}><Logo/></a>
+      <button type="button" ref={menuButton} className="menu-toggle" aria-expanded={menuOpen} aria-controls="main-nav" onClick={() => setMenuOpen(open => !open)}>
+        <span aria-hidden="true" className="menu-glyph"/>{menuOpen ? 'Close' : 'Menu'}
+      </button>
+      <nav id="main-nav" aria-label="Main" data-open={menuOpen}>{pages.map(item => <a key={item} href={link(item)} onClick={() => {
+        if (menuOpen) { setMenuOpen(false); main.current?.focus({ preventScroll: true }) }
+        if (item === page) window.scrollTo(0, 0)
+      }} aria-current={page === item ? 'page' : undefined}>{item}</a>)}</nav>
     </div></header>
     <main id="main-content" ref={main} tabIndex={-1}>
       {page === 'Overview' && <Overview/>}
