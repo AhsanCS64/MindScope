@@ -9,7 +9,7 @@ Create or use a repository you control and put the project root at its root. Com
 ## Render
 
 1. Create a Blueprint from the GitHub repository containing `render.yaml`. The Blueprint selects the free web plan and Python 3.13.5.
-2. Set `CORS_ORIGINS` to the exact HTTPS frontend origin. If you create Render first, use a temporary frontend origin and replace it with the actual Vercel domain after deployment. For multiple approved frontend deployments, provide comma-separated origins.
+2. The Blueprint sets `CORS_ORIGINS` to `https://mind-scope-tau.vercel.app`. If you use a different frontend domain, update the Blueprint to that exact HTTPS origin without a trailing slash. A manually created Render web service needs the same value set in its Environment tab.
 3. Use the included health path `/api/health`. The build installs the pinned dependencies and downloads the verified OpenML ARFF to build the local CSV. At runtime there is one CPU worker and no database.
 4. Confirm a successful build and open `https://<render-service>.onrender.com/api/health`.
 
@@ -20,7 +20,7 @@ Render's free web service tier is listed at 512 MB and spins down after 15 minut
 1. Import the same GitHub repository and set the root directory to `frontend`.
 2. Select Vite and keep `npm run build` and `dist` as the build command and output directory.
 3. Set `VITE_API_URL` to the Render service origin, over HTTPS, with no trailing path. Redeploy when it changes because Vite embeds the value at build time.
-4. Update Render's `CORS_ORIGINS` with the deployed frontend domain and deploy the backend configuration again. [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite)
+4. Confirm that Render's `CORS_ORIGINS` matches the deployed frontend domain. If you change a manually configured value, choose **Save and deploy** and wait for the backend to go live. [Vite on Vercel](https://vercel.com/docs/frameworks/frontend/vite)
 
 ## Public smoke checks
 
