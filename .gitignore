@@ -1,0 +1,13 @@
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+.env.local
+frontend/node_modules/
+frontend/dist/
+frontend/.vercel/
+/data/raw/
+/dataset_
+/mindscope_openml_xgb_ensemble.joblib
+/MindScope_Source.zip

@@ -1,0 +1,69 @@
+{
+  "output_scale": "probability of the dataset's recorded Yes label",
+  "method": "Mean probability-space SHAP contributions across all five ensemble members; 64-row background sample.",
+  "sample_size": 200,
+  "maximum_additivity_error": 1.4262765191119797e-07,
+  "features": [
+    {
+      "feature": "Academic Pressure",
+      "mean_absolute_shap": 0.15346011959115913
+    },
+    {
+      "feature": "Financial Stress",
+      "mean_absolute_shap": 0.11802902207937681
+    },
+    {
+      "feature": "Age",
+      "mean_absolute_shap": 0.07794912054872688
+    },
+    {
+      "feature": "Work/Study Hours",
+      "mean_absolute_shap": 0.06323577505705663
+    },
+    {
+      "feature": "Dietary Habits",
+      "mean_absolute_shap": 0.06040590030020189
+    },
+    {
+      "feature": "Study Satisfaction",
+      "mean_absolute_shap": 0.04945665459263424
+    },
+    {
+      "feature": "Sleep Duration",
+      "mean_absolute_shap": 0.03006854634391029
+    },
+    {
+      "feature": "Family History of Mental Illness",
+      "mean_absolute_shap": 0.02104705092290891
+    },
+    {
+      "feature": "City",
+      "mean_absolute_shap": 0.012873356814853487
+    },
+    {
+      "feature": "CGPA",
+      "mean_absolute_shap": 0.012410988906770885
+    },
+    {
+      "feature": "Degree",
+      "mean_absolute_shap": 0.008077827537653525
+    },
+    {
+      "feature": "Gender",
+      "mean_absolute_shap": 0.0011637183167499132
+    },
+    {
+      "feature": "Profession",
+      "mean_absolute_shap": 0.0
+    },
+    {
+      "feature": "Work Pressure",
+      "mean_absolute_shap": 0.0
+    },
+    {
+      "feature": "Job Satisfaction",
+      "mean_absolute_shap": 0.0
+    }
+  ],
+  "warning": "These values explain model behavior, not causes or clinical risk."
+}

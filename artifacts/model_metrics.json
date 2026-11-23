@@ -1,0 +1,95 @@
+{
+  "status": "held_out_verified",
+  "message": "The exported ensemble was scored on the original stratified holdout after its refit on training and validation data.",
+  "provenance": {
+    "notebook": "student-depression.ipynb",
+    "split_seed": 42,
+    "train_rows": 16722,
+    "validation_rows": 5574,
+    "refit_rows": 22296,
+    "test_rows": 5574
+  },
+  "held_out": {
+    "sample_count": 5574,
+    "threshold": 0.56,
+    "accuracy": 0.7915321133835665,
+    "yes_precision": 0.8250773993808049,
+    "yes_recall": 0.8169834457388105,
+    "yes_f1": 0.8210104744300678,
+    "macro_f1": 0.7857200138473364,
+    "roc_auc": 0.8713820039502801,
+    "pr_auc": 0.8973922350781267,
+    "brier": 0.1415914665990942,
+    "confusion_matrix": [
+      [
+        1747,
+        565
+      ],
+      [
+        597,
+        2665
+      ]
+    ],
+    "calibration": [
+      {
+        "mean_prediction": 0.06155093659323016,
+        "observed_yes_rate": 0.05555555555555555
+      },
+      {
+        "mean_prediction": 0.15836177487561673,
+        "observed_yes_rate": 0.13824057450628366
+      },
+      {
+        "mean_prediction": 0.28710315959992927,
+        "observed_yes_rate": 0.2980251346499102
+      },
+      {
+        "mean_prediction": 0.4506403359888276,
+        "observed_yes_rate": 0.44802867383512546
+      },
+      {
+        "mean_prediction": 0.5998240995021864,
+        "observed_yes_rate": 0.6122082585278277
+      },
+      {
+        "mean_prediction": 0.7197040538385484,
+        "observed_yes_rate": 0.7163375224416517
+      },
+      {
+        "mean_prediction": 0.8114199399734481,
+        "observed_yes_rate": 0.8064516129032258
+      },
+      {
+        "mean_prediction": 0.8796381662521163,
+        "observed_yes_rate": 0.8725314183123878
+      },
+      {
+        "mean_prediction": 0.9316251692908878,
+        "observed_yes_rate": 0.9389587073608617
+      },
+      {
+        "mean_prediction": 0.9695519377894729,
+        "observed_yes_rate": 0.9659498207885304
+      }
+    ]
+  },
+  "notebook_evaluation": {
+    "description": "The notebook scored the train-only tuned ensemble before the final refit.",
+    "validation_macro_f1": 0.795653,
+    "test_accuracy": 0.791,
+    "test_macro_f1": 0.7851,
+    "test_roc_auc": 0.8705,
+    "test_pr_auc": 0.8967,
+    "test_brier": 0.142
+  },
+  "verification": {
+    "reference_probability": 0.27652499079704285,
+    "reproduced_probability": 0.27652511596679685,
+    "absolute_error": 1.2516975400611585e-07,
+    "maximum_reference_error": 4.887580871693054e-07,
+    "reference_profiles": 10,
+    "refit_reference_profiles": 5,
+    "maximum_refit_reference_error": 2.8283309927434885e-07,
+    "tolerance": 5e-05
+  }
+}

@@ -1,0 +1,55 @@
+{
+  "threshold": 0.5599999999999997,
+  "feature_columns": [
+    "Gender",
+    "Age",
+    "City",
+    "Profession",
+    "Academic Pressure",
+    "Work Pressure",
+    "CGPA",
+    "Study Satisfaction",
+    "Job Satisfaction",
+    "Sleep Duration",
+    "Dietary Habits",
+    "Degree",
+    "Work/Study Hours",
+    "Financial Stress",
+    "Family History of Mental Illness"
+  ],
+  "categorical_columns": [
+    "Gender",
+    "City",
+    "Profession",
+    "Sleep Duration",
+    "Dietary Habits",
+    "Degree",
+    "Family History of Mental Illness"
+  ],
+  "target_column": "Depression",
+  "class_mapping": {
+    "No": 0,
+    "Yes": 1
+  },
+  "positive_label": "Yes",
+  "openml_dataset_id": 46874,
+  "random_seeds": [
+    42,
+    43,
+    44,
+    45,
+    46
+  ],
+  "xgboost_parameters": {
+    "learning_rate": 0.01412899174659988,
+    "max_depth": 2,
+    "min_child_weight": 17.75040668154238,
+    "gamma": 0.439173010353502,
+    "subsample": 0.601952576443968,
+    "colsample_bytree": 0.4375891879958901,
+    "colsample_bylevel": 0.5404924929443192,
+    "reg_lambda": 1.898768564474639,
+    "reg_alpha": 0.0032127717520493435
+  },
+  "n_estimators": 1912
+}

@@ -1,0 +1,52 @@
+{
+  "feature_columns": [
+    "Gender",
+    "Age",
+    "City",
+    "Profession",
+    "Academic Pressure",
+    "Work Pressure",
+    "CGPA",
+    "Study Satisfaction",
+    "Job Satisfaction",
+    "Sleep Duration",
+    "Dietary Habits",
+    "Degree",
+    "Work/Study Hours",
+    "Financial Stress",
+    "Family History of Mental Illness"
+  ],
+  "categorical_columns": [
+    "Gender",
+    "City",
+    "Profession",
+    "Sleep Duration",
+    "Dietary Habits",
+    "Degree",
+    "Family History of Mental Illness"
+  ],
+  "threshold": 0.5599999999999997,
+  "class_mapping": {
+    "No": 0,
+    "Yes": 1
+  },
+  "positive_label": "Yes",
+  "openml_dataset_id": 46874,
+  "aggregation": "mean of the five members' Yes probabilities",
+  "xgboost_version": "3.4.1",
+  "scikit_learn_version": "1.6.1",
+  "preprocessors": [
+    "preprocess_0.joblib",
+    "preprocess_1.joblib",
+    "preprocess_2.joblib",
+    "preprocess_3.joblib",
+    "preprocess_4.joblib"
+  ],
+  "boosters": [
+    "booster_0.json",
+    "booster_1.json",
+    "booster_2.json",
+    "booster_3.json",
+    "booster_4.json"
+  ]
+}
