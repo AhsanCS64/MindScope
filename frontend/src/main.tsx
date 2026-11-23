@@ -14,7 +14,7 @@ const current = () => pages.find(page => link(page) === location.hash) ?? 'Overv
 const education = 'This educational demonstration estimates the dataset’s recorded label. It is not a diagnosis, a clinical screen, or a treatment recommendation.'
 
 function Logo() {
-  return <img className="brand-logo" src="/assets/MindScope.png" alt="MindScope" width="2172" height="724"/>
+  return <><img className="brand-logo" src="/assets/mindscope-orbit.png" alt="" width="44" height="44"/><span>MindScope</span></>
 }
 
 function Heading({ label, title, children }: { label: string; title: string; children: ReactNode }) {

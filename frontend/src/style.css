@@ -94,7 +94,28 @@ footer>div{min-height:85px;display:flex;align-items:center;justify-content:space
   color: #133b30;
 }
 .site-header { background: #fffefa; border-top: 4px solid var(--green); }
-.brand-logo { display: block; width: 158px; height: auto; }
+.brand-logo { display: block; width: 44px; height: 44px; }
+.site-header .brand { flex-flow: row nowrap; }
+@media (prefers-reduced-motion: no-preference) {
+  .site-header .brand-logo { animation: emblem-drift 6s ease-in-out infinite; }
+  .site-header .brand span {
+    transition: color 220ms ease, transform 220ms ease;
+  }
+  .site-header .brand:is(:hover, :focus-visible) .brand-logo {
+    animation-play-state: paused;
+    rotate: -7deg;
+    scale: 1.08;
+  }
+  .site-header .brand-logo { transition: rotate 280ms ease, scale 280ms ease; }
+  .site-header .brand:is(:hover, :focus-visible) span {
+    color: var(--green);
+    transform: translateX(2px);
+  }
+  @keyframes emblem-drift {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-2px); }
+  }
+}
 nav { gap: 2px; }
 nav a { border-radius: 24px; }
 nav a[aria-current] { background: var(--forest); color: white; }
